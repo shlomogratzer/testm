@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAll = exports.create = void 0;
+exports.changeStatus = exports.deleteBeeper = exports.getByStatus = exports.getById = exports.getAll = exports.create = void 0;
 let id = 0;
 const beeperDal_1 = require("../dbl/beeperDal");
 const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -30,7 +30,39 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.create = create;
 const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield (0, beeperDal_1.getallBeepers)();
-    res.send(users);
+    const targets = yield (0, beeperDal_1.getallBeepers)();
+    res.send(targets);
 });
 exports.getAll = getAll;
+const getById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const target = yield (0, beeperDal_1.getBeeperById)(req.params.id);
+    res.send(target);
+});
+exports.getById = getById;
+const getByStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const target = yield (0, beeperDal_1.getBeeperByStatus)(req.params.status);
+    res.send(target);
+});
+exports.getByStatus = getByStatus;
+const deleteBeeper = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const target = yield (0, beeperDal_1.del)(req.params.id);
+    res.send('beeper is deleted');
+});
+exports.deleteBeeper = deleteBeeper;
+const changeStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const target = yield (0, beeperDal_1.getBeeperById)(req.params.id);
+    if (target) {
+        target.status = req.body.status;
+        if (req.body.status === "deployed") {
+            setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
+                target.status = "detonated";
+                target.detonated_at = new Date();
+                yield (0, beeperDal_1.update)(target);
+            }), 10000);
+        }
+        yield (0, beeperDal_1.update)(target);
+        const newTarget = yield (0, beeperDal_1.getBeeperById)(req.params.id);
+        res.send(newTarget);
+    }
+});
+exports.changeStatus = changeStatus;

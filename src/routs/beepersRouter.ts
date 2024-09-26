@@ -1,13 +1,13 @@
 import  express from "express";
-import {create,getAll} from '../controllers/beepersController'
+import {create,getAll,getById,getByStatus,deleteBeeper,changeStatus} from '../controllers/beepersController'
 const BASE_URL = '/api/beepers'
 const router = express.Router()
 
 router.get(`${BASE_URL}/`,getAll)
-// router.get(`${BASE_URL}/:id`, getById)
-// router.get(`${BASE_URL}/status/:status`, getByStatus)
+router.get(`${BASE_URL}/:id`, getById)
+router.get(`${BASE_URL}/status/:status`, getByStatus)
 router.post(`${BASE_URL}/`, create)
-// router.put(`${BASE_URL}/:id/status`, changeStatus)
-// router.delete(`${BASE_URL}/:id`, deleteBeeper)
+router.put(`${BASE_URL}/:id/status`, changeStatus)
+router.delete(`${BASE_URL}/:id`, deleteBeeper)
 
 export default router
